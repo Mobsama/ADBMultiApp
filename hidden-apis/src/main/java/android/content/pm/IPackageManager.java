@@ -12,6 +12,9 @@ public interface IPackageManager extends IInterface {
     ParceledListSlice<ApplicationInfo> getInstalledApplications(int flags, int userId)
             throws RemoteException;
 
+    ParceledListSlice<ApplicationInfo> getInstalledApplications(long flags, int userId)
+            throws RemoteException;
+
     int installExistingPackageAsUser(String packageName, int userId, int installFlags,
                                      int installReason, List<String> whiteListedPermissions);
 

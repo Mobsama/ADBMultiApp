@@ -2,8 +2,10 @@ package com.mob.adbmultiapp.main
 
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.os.Build
 import androidx.compose.material.SnackbarDuration
 import androidx.lifecycle.viewModelScope
+import com.mob.adbmultiapp.BuildConfig
 import com.mob.adbmultiapp.base.BaseViewModel
 import com.mob.adbmultiapp.base.ErrorPageState
 import com.mob.adbmultiapp.date.AppInfoItem
@@ -135,9 +137,12 @@ class MainViewModel : BaseViewModel<MainContract.State, MainContract.Event, Main
     private fun getAppsByUserId(userId: Int) {
         viewModelScope.launch {
             state.value.context?.let { context ->
-                val apps = SystemServiceApi.PackageManager.getInstalledApplications(0, userId)
-                    .list.asSequence()
-                    .filter { (it.flags and ApplicationInfo.FLAG_SYSTEM) == 0 && it.packageName != "com.mob.adbmultiapp" }
+                val apps = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        SystemServiceApi.PackageManager.getInstalledApplications(0L, userId)
+                    } else {
+                        SystemServiceApi.PackageManager.getInstalledApplications(0, userId)
+                    }.list.asSequence()
+                    .filter { (it.flags and ApplicationInfo.FLAG_SYSTEM) == 0 && it.packageName != BuildConfig.APPLICATION_ID }
                     .map { AppInfoItem(it, appName = it.getAppName(context), appLabel = it.loadIcon(context.packageManager)) }.toList()
                 if (userId == 0) {
                     setState { copy(get0UserApp = false, appFor0User = apps) }

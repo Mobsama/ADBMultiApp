@@ -4,14 +4,14 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.mob.adbmultiapp"
-        minSdk 30
-        targetSdk 31
-        versionCode 1
-        versionName "1.0"
+        minSdk 31
+        targetSdk 33
+        versionCode 2
+        versionName "2.0"
 
         vectorDrawables {
             useSupportLibrary true
